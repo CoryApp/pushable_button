@@ -161,9 +161,21 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
                         decoration: widget.borderRadius != null
                             ? BoxDecoration(
                                 border: widget.outline
-                                    ? Border.all(
-                                        width: 1.5,
-                                        color: bottomHslColor.toColor())
+                                    ? Border(
+                                        right: BorderSide(
+                                          width: 1.5,
+                                          color: bottomHslColor.toColor(),
+                                        ),
+                                        left: BorderSide(
+                                          width: 1.5,
+                                          color: bottomHslColor.toColor(),
+                                        ),
+                                        top: BorderSide(
+                                          width: 1.5,
+                                          color: bottomHslColor.toColor(),
+                                        ),
+                                        bottom: BorderSide.none,
+                                      )
                                     : null,
                                 color: hslColor.toColor(),
                                 borderRadius:
