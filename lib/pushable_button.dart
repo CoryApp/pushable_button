@@ -53,19 +53,6 @@ class PushableButton extends StatefulWidget {
 class _PushableButtonState extends AnimationControllerState<PushableButton> {
   _PushableButtonState(Duration duration) : super(duration);
 
-  bool _isDragInProgress = false;
-  Offset _gestureLocation = Offset.zero;
-
-  void _handleTapDown(TapDownDetails details) {
-    _gestureLocation = details.localPosition;
-    animationController.forward();
-  }
-
-  void _handleTapUp(TapUpDetails details) {
-    animationController.reverse();
-    widget.onPressed?.call();
-  }
-
   void _handleTapCancel() {
     Future.delayed(Duration(milliseconds: 100), () {
       if (!_isDragInProgress && mounted) {
@@ -103,6 +90,28 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
 
   void _handleDragUpdate(DragUpdateDetails details) {
     _gestureLocation = details.localPosition;
+  }
+
+  bool _isDragInProgress = false;
+  Offset _gestureLocation = Offset.zero;
+
+  void _handleTapDown(TapDownDetails details) {
+    _gestureLocation = details.localPosition;
+    animationController.forward();
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    if (animationController.status == AnimationStatus.completed) {
+      _reverseThenCallOnPressed();
+    } else {
+      animationController.forward().then((_) => _reverseThenCallOnPressed());
+    }
+  }
+
+  void _reverseThenCallOnPressed() {
+    animationController.reverse().then((_) {
+      widget.onPressed?.call();
+    });
   }
 
   @override
