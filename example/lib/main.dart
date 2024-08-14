@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('ADD TO BASKET', style: textStyle),
                 height: 60,
                 outline: true,
-                elevation: 16,
+                elevation: 8,
                 hslColor: HSLColor.fromAHSL(1.0, 195, 1.0, 0.43),
                 // shadow: shadow,
                 onPressed: () => setState(() => _selection = '3'),

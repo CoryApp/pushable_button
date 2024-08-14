@@ -47,7 +47,7 @@ class PushableButton extends StatefulWidget {
 
   @override
   _PushableButtonState createState() =>
-      _PushableButtonState(Duration(milliseconds: 100));
+      _PushableButtonState(Duration(milliseconds: 50));
 }
 
 class _PushableButtonState extends AnimationControllerState<PushableButton> {
