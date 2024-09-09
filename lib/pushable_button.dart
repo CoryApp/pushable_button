@@ -62,12 +62,14 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
   }
 
   void _handleDragStart(DragStartDetails details) {
+    if (widget.onPressed == null) return;
     _gestureLocation = details.localPosition;
     _isDragInProgress = true;
     animationController.forward();
   }
 
   void _handleDragEnd(Size buttonSize) {
+    if (widget.onPressed == null) return;
     //print('drag end (in progress: $_isDragInProgress)');
     if (_isDragInProgress) {
       _isDragInProgress = false;
@@ -96,11 +98,13 @@ class _PushableButtonState extends AnimationControllerState<PushableButton> {
   Offset _gestureLocation = Offset.zero;
 
   void _handleTapDown(TapDownDetails details) {
+    if (widget.onPressed == null) return;
     _gestureLocation = details.localPosition;
     animationController.forward();
   }
 
   void _handleTapUp(TapUpDetails details) {
+    if (widget.onPressed == null) return;
     if (animationController.status == AnimationStatus.completed) {
       _reverseThenCallOnPressed();
     } else {
