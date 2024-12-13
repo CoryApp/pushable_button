@@ -46,20 +46,17 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               PushableButton(
                 child: Text('PUSH ME 😎', style: textStyle),
-                height: 60,
+                minHeight: 60,
                 elevation: 8,
                 hslColor: HSLColor.fromAHSL(1.0, 356, 1.0, 0.43),
-                shadow: shadow,
                 borderRadius: 4,
                 onPressed: () => setState(() => _selection = '1'),
               ),
               SizedBox(height: 32),
               PushableButton(
                 child: Text('ENROLL NOW', style: textStyle),
-                height: 60,
                 elevation: 8,
                 hslColor: HSLColor.fromAHSL(1.0, 120, 1.0, 0.37),
-                shadow: shadow,
                 borderRadius: 16,
                 onPressed: () => setState(() => _selection = '2'),
               ),
@@ -67,11 +64,9 @@ class _MyHomePageState extends State<MyHomePage> {
               PushableButton(
                 borderRadius: 8,
                 child: Text('ADD TO BASKET', style: textStyle),
-                height: 60,
                 outline: true,
                 elevation: 8,
                 hslColor: HSLColor.fromAHSL(1.0, 195, 1.0, 0.43),
-                // shadow: shadow,
                 onPressed: () => setState(() => _selection = '3'),
               ),
               SizedBox(height: 32),
