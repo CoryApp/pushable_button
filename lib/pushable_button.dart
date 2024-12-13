@@ -117,8 +117,9 @@ class _AnimatedPushableButton extends StatefulWidget {
 class _AnimatedPushableButtonState extends State<_AnimatedPushableButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
-  bool _isDragging = false;
-  Offset? _dragOffset;
+
+  bool _isDragInProgress = false;
+  Offset _gestureLocation = Offset.zero;
 
   @override
   void initState() {
@@ -137,54 +138,62 @@ class _AnimatedPushableButtonState extends State<_AnimatedPushableButton>
   }
 
   void _handleTapDown(TapDownDetails details) {
-    if (widget.onPressed != null) _animationController.forward();
+    if (widget.onPressed == null) return;
+    _gestureLocation = details.localPosition;
+    _animationController.forward();
   }
 
   void _handleTapUp(TapUpDetails details) {
     if (widget.onPressed == null) return;
-    _animationController.reverse();
-    widget.onPressed?.call();
+    if (_animationController.status == AnimationStatus.completed) {
+      _reverseThenCallOnPressed();
+    } else {
+      _animationController.forward().then((_) => _reverseThenCallOnPressed());
+    }
   }
 
   void _handleTapCancel() {
-    if (widget.onPressed == null) return;
-    _animationController.reverse();
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (!_isDragInProgress && mounted) _animationController.reverse();
+    });
   }
 
   void _handleDragStart(DragStartDetails details) {
     if (widget.onPressed == null) return;
-    setState(() {
-      _isDragging = true;
-      _dragOffset = details.localPosition;
-    });
-    _animationController.forward(from: 0.0);
+    _gestureLocation = details.localPosition;
+    _isDragInProgress = true;
+    _animationController.forward();
   }
 
   void _handleDragEnd(DragEndDetails details, Size buttonSize) {
     if (widget.onPressed == null) return;
-    setState(() {
-      _isDragging = false;
-      _dragOffset = null;
-    });
-    _animationController.reverse();
-
-    final buttonRect = Offset.zero & buttonSize;
-    if (buttonRect.contains(_dragOffset ?? Offset.zero)) {
+    if (_isDragInProgress) {
+      _isDragInProgress = false;
+      _animationController.reverse();
+    }
+    if (_gestureLocation.dx >= 0 &&
+        _gestureLocation.dx < buttonSize.width &&
+        _gestureLocation.dy >= 0 &&
+        _gestureLocation.dy < buttonSize.height) {
       widget.onPressed?.call();
     }
   }
 
   void _handleDragCancel() {
-    if (widget.onPressed == null) return;
-    setState(() {
-      _isDragging = false;
-      _dragOffset = null;
-    });
-    _animationController.reverse();
+    if (_isDragInProgress) {
+      _isDragInProgress = false;
+      _animationController.reverse();
+    }
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
-    if (_isDragging) setState(() => _dragOffset = details.localPosition);
+    _gestureLocation = details.localPosition;
+  }
+
+  void _reverseThenCallOnPressed() {
+    _animationController.reverse().then((_) {
+      widget.onPressed?.call();
+    });
   }
 
   @override
